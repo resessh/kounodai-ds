@@ -1,0 +1,36 @@
+{
+  "name": "kounodai-ds",
+  "scripts": {
+    "build": "rimraf ./dist && tsc",
+    "serve": "yarn run build && firebase serve --only functions",
+    "shell": "yarn run build && firebase functions:shell",
+    "start": "yarn run shell",
+    "dev": "yarn run build && node dist/index.js",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "main": "./dist/index.js",
+  "repository": "ssh://git@github.com/resessh/kounodai-ds.git",
+  "author": "resessh <info@resessh.net>",
+  "dependencies": {
+    "@types/puppeteer": "^1.12.3",
+    "axios": "^0.18.0",
+    "date-fns": "^1.30.1",
+    "firebase-admin": "~6.0.0",
+    "firebase-functions": "^2.1.0",
+    "puppeteer": "^1.14.0",
+    "qs": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/date-fns": "^2.6.0",
+    "@types/node": "^10.12.18",
+    "@types/qs": "^6.5.1",
+    "rimraf": "^2.6.3",
+    "typescript": "^3.2.2"
+  },
+  "private": true
+}

@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "predeploy": "npm --prefix functions run build",
+    "source": "functions"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}
