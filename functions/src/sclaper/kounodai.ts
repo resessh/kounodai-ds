@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 
 import { waitFor } from '../utils';
-import { TLessonPeriodsByDate } from '../types';
+import { TLessonPeriodsByDate, TLessonPeriod } from '../types';
 
 export const getReservablePeriodsByDate = async (
   loginUrl: string,
@@ -20,7 +20,7 @@ export const getReservablePeriodsByDate = async (
   const frame = await page
     .frames()
     .find(frame => /ZAD00YI200_Login.aspx/.test(frame.url()));
-  if (!frame) return;
+  if (!frame) throw new Error('no frame to sclape');
   await frame.type('#txtKyoushuuseiNO', loginId);
   await frame.type('#txtPassword', loginPass);
   await waitFor(1000);
@@ -39,11 +39,11 @@ export const getReservablePeriodsByDate = async (
   ////////////////////
   // FOR DEVELOPING
   ////////////////////
-  await waitFor(1000);
-  await Promise.all([
-    frame.select('#ddlWeeks', '2019/04/17 0:00:00'),
-    frame.waitForNavigation(),
-  ]);
+  // await waitFor(1000);
+  // await Promise.all([
+  //   frame.select('#ddlWeeks', '2019/04/17 0:00:00'),
+  //   frame.waitForNavigation(),
+  // ]);
 
   // 4. get dates.
   const dates = await frame.$$eval(

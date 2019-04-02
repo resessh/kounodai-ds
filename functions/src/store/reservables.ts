@@ -1,3 +1,4 @@
+import { getTime } from 'date-fns';
 import { db } from '../firebase';
 import { TLessonPeriodsByDate } from '../types';
 
@@ -14,8 +15,11 @@ export const fetchLastReservables = async (): Promise<TLessonPeriodsByDate> => {
 };
 
 export const saveReservables = async (reservables: TLessonPeriodsByDate) => {
-  await db.collection(TABLE_NAME).add({
-    createdAt: new Date(),
-    reservables,
-  });
+  await db
+    .collection(TABLE_NAME)
+    .doc(`${getTime(new Date())}`)
+    .set({
+      createdAt: new Date(),
+      reservables,
+    });
 };

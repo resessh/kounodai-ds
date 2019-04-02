@@ -13,7 +13,8 @@
     "baseUrl": ".",
     "lib": [
       "es2017",
-      "dom"
+      "dom",
+      "esnext.array"
     ]
   },
   "compileOnSave": true,
