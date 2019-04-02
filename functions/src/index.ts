@@ -20,12 +20,12 @@ const LOGIN_PASS = configs.kounodai.login_pass;
 
 exports.check = functions
   .runWith({
-    timeoutSeconds: 300,
-    memory: '512MB',
+    timeoutSeconds: 60,
+    memory: '2GB',
   })
   .region(REGION)
   .https.onRequest(async (req, res) => {
-    if (req.headers['x-api-key'] !== API_KEY) {
+    if (req.query.key !== API_KEY) {
       res.status(401).send({ message: 'not authorized' });
       return;
     }
@@ -38,7 +38,7 @@ exports.check = functions
         LOGIN_PASS,
       );
     } catch (error) {
-      console.log('Fail to sclape system.', error);
+      console.error('Fail to sclape system.', error);
       return;
     }
 
@@ -46,7 +46,7 @@ exports.check = functions
     try {
       order = await fetchLastReservables();
     } catch (error) {
-      console.log('Fail to fetch latest reservables.', error);
+      console.error('Fail to fetch latest reservables.', error);
       return;
     }
 
@@ -57,7 +57,7 @@ exports.check = functions
       try {
         await postMessage(message);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
     await saveReservables(latestReservables);

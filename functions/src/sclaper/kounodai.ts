@@ -1,20 +1,44 @@
-import puppeteer from 'puppeteer';
+import chromium from 'chrome-aws-lambda';
+import puppeteer from 'puppeteer-core';
 
 import { waitFor } from '../utils';
 import { TLessonPeriodsByDate, TLessonPeriod } from '../types';
+
+const NAVIGAION_TIMEOUT = 12000;
+let page: puppeteer.Page | undefined;
+
+const getPage = async () => {
+  const browser = await puppeteer.launch({
+    args: chromium.args,
+    defaultViewport: chromium.defaultViewport,
+    executablePath: await chromium.executablePath,
+    headless: chromium.headless,
+  });
+  return browser.newPage();
+};
 
 export const getReservablePeriodsByDate = async (
   loginUrl: string,
   loginId: string,
   loginPass: string,
 ): Promise<TLessonPeriodsByDate> => {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
-  const page = await browser.newPage();
+  if (!page) {
+    page = await getPage();
+  }
 
   // 1. access the landing page to get generated login page url.
-  await page.goto(loginUrl);
+  await page.goto(loginUrl, {
+    timeout: NAVIGAION_TIMEOUT,
+    waitUntil: 'networkidle0',
+  });
   await waitFor(800);
-  await Promise.all([page.click('#lnkToLogin'), page.waitForNavigation()]);
+  await Promise.all([
+    page.waitForNavigation({
+      timeout: NAVIGAION_TIMEOUT,
+      waitUntil: 'networkidle0',
+    }),
+    page.click('#lnkToLogin'),
+  ]);
 
   // 2. login.
   const frame = await page
@@ -25,15 +49,21 @@ export const getReservablePeriodsByDate = async (
   await frame.type('#txtPassword', loginPass);
   await waitFor(1000);
   await Promise.all([
+    frame.waitForNavigation({
+      timeout: NAVIGAION_TIMEOUT,
+      waitUntil: 'networkidle0',
+    }),
     frame.click('#btnAuthentication'),
-    frame.waitForNavigation(),
   ]);
 
   // 3. access the reservation page.
   await waitFor(500);
   await Promise.all([
+    frame.waitForNavigation({
+      timeout: NAVIGAION_TIMEOUT,
+      waitUntil: 'networkidle0',
+    }),
     frame.click('#btnMenu_Kyoushuuyoyaku'),
-    frame.waitForNavigation(),
   ]);
 
   ////////////////////

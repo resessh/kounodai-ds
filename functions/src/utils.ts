@@ -62,23 +62,27 @@ export const createSlackMessage = (diff: TLessonPeriodsByDate) => {
   };
 
   const reservables = Object.entries(diff)
-    .map(([date, periods]) => periods.map(period => ({ date, period })))
-    .flat()
-    .map(({ date, period }) => ({
-      type: 'section',
-      fields: [
-        {
-          type: 'mrkdwn',
-          text: `*日付:*\n${format(date, 'YYYY/M/D')}`,
-        },
-        {
-          type: 'mrkdwn',
-          text: `*時限:*\n${period}時限　(${getDurationTextFromPeriod(
-            period,
-          )})`,
-        },
-      ],
-    }))
+    .map(([date, periods]) => {
+      const periodsText = periods
+        .map(
+          period => `${period}時限　( ${getDurationTextFromPeriod(period)} )`,
+        )
+        .join('\n');
+
+      return {
+        type: 'section',
+        fields: [
+          {
+            type: 'mrkdwn',
+            text: `*日付:*\n${format(date, 'YYYY/M/D')}`,
+          },
+          {
+            type: 'mrkdwn',
+            text: `*時限:*\n${periodsText}`,
+          },
+        ],
+      };
+    })
     .map(section => [section, { type: 'divider' }])
     .flat();
 
