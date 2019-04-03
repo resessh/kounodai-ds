@@ -47,6 +47,7 @@ const getDurationTextFromPeriod = (period: TLessonPeriod): string => {
     '16:00～16:50',
     '17:00～17:50',
     '18:00～18:50',
+    '19:00〜19:50',
   ];
 
   return durationOfPeriodMap[period];
