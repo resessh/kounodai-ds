@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import { format } from 'date-fns';
+import ja from 'date-fns/locale/ja';
 import { TLessonPeriodsByDate, TLessonPeriods, TLessonPeriod } from './types';
 
 export const waitFor = async (milliseconds: number) => {
@@ -74,7 +75,9 @@ export const createSlackMessage = (diff: TLessonPeriodsByDate) => {
         fields: [
           {
             type: 'mrkdwn',
-            text: `*日付:*\n${format(date, 'YYYY/M/D')}`,
+            text: `*日付:*\n${format(date, 'YYYY/M/D')} ( ${format(date, 'dd', {
+              locale: ja,
+            })} )`,
           },
           {
             type: 'mrkdwn',
