@@ -1,10 +1,6 @@
 import * as functions from 'firebase-functions';
 import 'firebase-functions';
 
-// @ts-ignore
-import flat from 'array.prototype.flat';
-flat.shim();
-
 import { getReservablePeriodsByDate } from './sclaper/kounodai';
 import { fetchLastReservables, saveReservables } from './store/reservables';
 import { postMessage } from './apis/slack';

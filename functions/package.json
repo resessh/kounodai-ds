@@ -16,7 +16,6 @@
   "repository": "ssh://git@github.com/resessh/kounodai-ds.git",
   "author": "resessh <info@resessh.net>",
   "dependencies": {
-    "array.prototype.flat": "^1.2.1",
     "axios": "^0.18.0",
     "chrome-aws-lambda": "^1.14.0",
     "date-fns": "^1.30.1",

@@ -55,42 +55,32 @@ const getDurationTextFromPeriod = (period: TLessonPeriod): string => {
 
 const SLACK_USER_ID = functions.config().slack.user_id;
 export const createSlackMessage = (diff: TLessonPeriodsByDate) => {
-  const textContent = {
-    type: 'section',
-    text: {
-      type: 'mrkdwn',
-      text: `<@${SLACK_USER_ID}> *教習期限5/21のお前* が予約できる新しい空き枠を見つけました。`,
-    },
-  };
+  const text = `<@${SLACK_USER_ID}> *教習期限5/21のお前* が予約できる新しい空き枠を見つけました。`;
 
-  const reservables = Object.entries(diff)
-    .map(([date, periods]) => {
-      const periodsText = periods
-        .map(
-          period => `${period}時限　( ${getDurationTextFromPeriod(period)} )`,
-        )
-        .join('\n');
+  const reservables = Object.entries(diff).map(([date, periods]) => {
+    const periodsText = periods
+      .map(period => `${period}時限 ( ${getDurationTextFromPeriod(period)} )`)
+      .join('\n');
 
-      return {
-        type: 'section',
-        fields: [
-          {
-            type: 'mrkdwn',
-            text: `*日付:*\n${format(date, 'YYYY/M/D')} ( ${format(date, 'dd', {
-              locale: ja,
-            })} )`,
-          },
-          {
-            type: 'mrkdwn',
-            text: `*時限:*\n${periodsText}`,
-          },
-        ],
-      };
-    })
-    .map(section => [section, { type: 'divider' }])
-    .flat();
+    return {
+      color: '#20ab7b',
+      fields: [
+        {
+          title: '日付',
+          value: `${format(date, 'YYYY/M/D ( dd )', { locale: ja })}`,
+          short: true,
+        },
+        {
+          title: '時限',
+          text: periodsText,
+          short: true,
+        },
+      ],
+    };
+  });
 
   return {
-    blocks: [textContent, ...reservables],
+    text,
+    attachments: reservables,
   };
 };
